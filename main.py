@@ -96,4 +96,5 @@ with col2:
 
 # --- TABLE ---
 st.header("3. Loading Manifest")
+
 st.table(df.style.format({"Weight": "{:.2f}", "Arm": "{:.2f}", "Moment": "{:.2f}"}))
