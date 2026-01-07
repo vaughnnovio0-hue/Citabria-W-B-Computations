@@ -24,10 +24,19 @@ st.markdown("""
     
     .stApp { background-color: #0d1117; }
 
-    /* --- ROBUST SIDEBAR NAVIGATION FIX --- */
-    /* Target first link (Home) */
+    /* --- EMERGENCY SIDEBAR RESTORATION & STYLE --- */
+    /* Force the sidebar to remain visible and at a legible width */
+    [data-testid="stSidebar"] {
+        min-width: 250px !important;
+    }
+
+    [data-testid="stSidebarNav"] {
+        visibility: visible !important;
+    }
+
+    /* Target link text: Setting font-size 0 to hide old text, then before/after for new text */
     [data-testid="stSidebarNavItems"] li:nth-child(1) span {
-        font-size: 0 !important; 
+        font-size: 0 !important;
     }
     [data-testid="stSidebarNavItems"] li:nth-child(1) span::before {
         content: "🏠 Home";
@@ -38,7 +47,6 @@ st.markdown("""
         font-family: 'Orbitron', sans-serif;
     }
 
-    /* Target second link (W&B Calculator) */
     [data-testid="stSidebarNavItems"] li:nth-child(2) span {
         font-size: 0 !important;
     }
@@ -103,7 +111,6 @@ with col1:
     unit = st.radio("System Units", ["Lbs", "Kg"], horizontal=True)
     conv = 2.20462 if unit == "Kg" else 1.0
     
-    # DEFAULTED AT 0 VALUE
     pilot = st.number_input(f"Front Seat ({unit})", value=0.0, step=1.0) * conv
     rear = st.number_input(f"Rear Seat ({unit})", value=0.0, step=1.0) * conv
     baggage = st.number_input(f"Baggage ({unit})", value=0.0, step=1.0) * conv
@@ -115,7 +122,6 @@ with col1:
         st.latex(r"CG = \frac{\sum Moments}{\sum Weights}")
 
 with col2:
-    # Calculations
     total_weight = BEW_DEFAULT + pilot + rear + baggage + fuel_lbs
     total_moment = (BEW_DEFAULT * BEW_ARM) + (pilot * 16.0) + (rear * 47.0) + (baggage * 72.0) + (fuel_lbs * 24.0)
     cg = total_moment / total_weight if total_weight > 0 else 0
@@ -124,30 +130,14 @@ with col2:
     is_cg_safe = CG_LIMIT_FWD <= cg <= CG_LIMIT_AFT
     is_safe = is_w_safe and is_cg_safe
 
-    # Verdict Banner
     if is_safe:
-        st.markdown("""
-        <div style="background: linear-gradient(145deg, #1e5128, #4e9c5f); 
-                    padding: 20px; border-radius: 15px; text-align: center;
-                    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.2), 0 10px 20px rgba(0,0,0,0.4);
-                    border: 2px solid #7ed957; color: white; font-weight: bold; font-size: 24px;">
-            💎 SYSTEMS NOMINAL: SAFE FOR FLIGHT
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div style="background: linear-gradient(145deg, #1e5128, #4e9c5f); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid #7ed957; color: white; font-weight: bold; font-size: 24px;">💎 SYSTEMS NOMINAL: SAFE FOR FLIGHT</div>', unsafe_allow_html=True)
     else:
-        st.markdown("""
-        <div style="background: linear-gradient(145deg, #7b1113, #b22222); 
-                    padding: 20px; border-radius: 15px; text-align: center;
-                    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.2), 0 10px 20px rgba(0,0,0,0.4);
-                    border: 2px solid #ff4b4b; color: white; font-weight: bold; font-size: 24px;">
-            🛑 CRITICAL ALERT: OUT OF ENVELOPE
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div style="background: linear-gradient(145deg, #7b1113, #b22222); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid #ff4b4b; color: white; font-weight: bold; font-size: 24px;">🛑 CRITICAL ALERT: OUT OF ENVELOPE</div>', unsafe_allow_html=True)
 
     status = "safe" if is_safe else "NOT safe"
     st.info(f"The CG is **{cg:.2f} in.** aft of datum line at **{total_weight:.1f} lbs**, therefore the aircraft is **{status}** for flight.")
 
-    # HISTORY LOGGER BUTTON
     if st.button("💾 LOG TELEMETRY DATA"):
         entry = {
             "time": datetime.now().strftime("%H:%M:%S"),
@@ -158,15 +148,6 @@ with col2:
         st.session_state.calc_history.append(entry)
         st.toast("Telemetry logged to session history!")
 
-    if not is_safe:
-        st.markdown('<div class="section-box">💡 RECOMMENDED ACTIONS</div>', unsafe_allow_html=True)
-        if not is_w_safe:
-            st.warning(f"👉 **Overweight:** Remove {total_weight - MTOW:.1f} lbs of baggage or fuel.")
-        if cg > CG_LIMIT_AFT:
-            st.warning("👉 **Too Far Aft:** Move weight forward.")
-        if cg < CG_LIMIT_FWD:
-            st.warning("👉 **Too Far Forward:** Move weight aft.")
-
 # --- SIDEBAR HISTORY PANEL ---
 with st.sidebar:
     st.markdown('<div class="neon-text" style="font-size:18px;">📜 SESSION HISTORY</div>', unsafe_allow_html=True)
@@ -176,7 +157,6 @@ with st.sidebar:
             st.caption(f"CG: {item['cg']}")
             st.divider()
         
-        # CLEAR HISTORY BUTTON
         if st.button("🗑️ CLEAR HISTORY"):
             st.session_state.calc_history = []
             st.rerun()
@@ -190,21 +170,13 @@ fig, ax = plt.subplots(figsize=(12, 7))
 fig.patch.set_facecolor('#0d1117')
 ax.set_facecolor('#0a0e14')
 
-# Corrected Manual Limits from image
 norm_x = [14.2, 14.2, 19.2, 19.2, 14.2]
 norm_y = [1325, 1650, 1650, 1325, 1325]
-acro_x = [14.2, 14.2, 17.5, 17.5, 14.2]
-acro_y = [1325, 1650, 1650, 1325, 1325]
-
 ax.plot(norm_x, norm_y, color='#00d4ff', linewidth=3, alpha=0.8, label='Normal Category')
 ax.fill(norm_x, norm_y, color='#00d4ff', alpha=0.05) 
-ax.plot(acro_x, acro_y, color='#ff00ff', linestyle='--', linewidth=2, alpha=0.6, label='Acrobatic/Utility')
-ax.fill(acro_x, acro_y, color='#ff00ff', alpha=0.08) 
 
 ax.grid(True, linestyle=':', alpha=0.2, color='#00d4ff')
-
 state_color = '#00d4ff' if is_safe else '#ff4b4b'
-ax.scatter(cg, total_weight, color=state_color, s=1000, alpha=0.15, zorder=4)
 ax.scatter(cg, total_weight, color=state_color, s=400, alpha=0.3, zorder=5)
 ax.scatter(cg, total_weight, color='white', s=100, edgecolors=state_color, linewidth=2, zorder=6, label='Current State')
 
