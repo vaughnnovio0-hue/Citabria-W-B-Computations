@@ -1,5 +1,43 @@
 import streamlit as st
+import streamlit as st
+from streamlit_lottie import st_lottie
+import requests
 
+# Function to load 3D animations
+def load_lottieurl(url):
+    r = requests.get(url)
+    return r.json() if r.status_code == 200 else None
+
+# Futuristic Header Code
+st.markdown("""
+<style>
+    .futuristic-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        padding: 25px;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .neon-text {
+        color: #00d4ff;
+        text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff;
+        font-size: 35px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+</style>
+<div class="futuristic-card">
+    <div class="neon-text">🚀 CITABRIA FLIGHT INTERFACE</div>
+</div>
+""", unsafe_allow_html=True)
+
+# Add a 3D animated airplane icon
+lottie_air = load_lottieurl("https://lottie.host/82542037-1601-4475-9b24-733333333333/your_json_here.json") # Example URL
+if lottie_air:
+    st_lottie(lottie_air, height=200)
 # Page Configuration
 st.set_page_config(
     page_title="Citabria 7ECA Home",

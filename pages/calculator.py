@@ -67,10 +67,25 @@ with col2:
     is_safe = is_w_safe and is_cg_safe
 
     # Verdict Banner
-    if is_safe:
-        st.markdown('<div class="safe-banner">✅ SAFE FOR FLIGHT</div>', unsafe_allow_html=True)
-    else:
-        st.markdown('<div class="danger-banner">❌ NOT SAFE FOR FLIGHT</div>', unsafe_allow_html=True)
+    # Replace your old Banner logic with this:
+if is_safe:
+    st.markdown("""
+    <div style="background: linear-gradient(145deg, #1e5128, #4e9c5f); 
+                padding: 20px; border-radius: 15px; text-align: center;
+                box-shadow: inset 2px 2px 5px rgba(255,255,255,0.2), 0 10px 20px rgba(0,0,0,0.4);
+                border: 2px solid #7ed957; color: white; font-weight: bold; font-size: 24px;">
+        💎 SYSTEMS NOMINAL: SAFE FOR FLIGHT
+    </div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <div style="background: linear-gradient(145deg, #7b1113, #b22222); 
+                padding: 20px; border-radius: 15px; text-align: center;
+                box-shadow: inset 2px 2px 5px rgba(255,255,255,0.2), 0 10px 20px rgba(0,0,0,0.4);
+                border: 2px solid #ff4b4b; color: white; font-weight: bold; font-size: 24px;">
+        🛑 CRITICAL ALERT: OUT OF ENVELOPE
+    </div>
+    """, unsafe_allow_html=True)
 
     # Verdict Statement
     status = "safe" if is_safe else "NOT safe"
