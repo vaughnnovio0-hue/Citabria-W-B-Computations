@@ -1,100 +1,83 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import pandas as pd
-from fpdf import FPDF
-from datetime import datetime
 
-# --- AIRCRAFT FIXED DATA ---
-AIRCRAFT = "Citabria Aurora 7ECA"
-MTOW = 1650.0          
-BEW_DEFAULT = 1060.0           
-BEW_ARM = 11.5         
-CG_FWD = 14.2          
-CG_AFT = 19.2          
-FUEL_DENSITY = 6.0     # lbs/gal
-KG_TO_LBS = 2.20462    
+# Page Configuration
+st.set_page_config(
+    page_title="Citabria 7ECA Home",
+    page_icon="✈️",
+    layout="wide"
+)
 
-st.set_page_config(page_title=f"{AIRCRAFT} W&B", layout="wide")
+# Custom Styling for the Home Page
+st.markdown("""
+<style>
+    .main-title {
+        font-size: 42px;
+        font-weight: bold;
+        color: #0E1117;
+        text-align: center;
+        margin-bottom: 0px;
+    }
+    .subtitle {
+        font-size: 20px;
+        color: #555;
+        text-align: center;
+        margin-top: 0px;
+        margin-bottom: 30px;
+    }
+    .spec-card {
+        background-color: #f0f2f6;
+        padding: 20px;
+        border-radius: 15px;
+        border-left: 5px solid #ff4b4b;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# --- UI HEADER ---
-st.title(f"✈️ {AIRCRAFT} Weight & Balance")
-st.markdown("### Professional Multi-Unit Pre-Flight Tool")
+st.markdown('<div class="main-title">✈️ Citabria Aurora 7ECA Flight Suite</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Official Pre-Flight Weight & Balance Planning Tool</div>', unsafe_allow_html=True)
+
 st.divider()
 
-col1, col2 = st.columns([1, 1.2])
+col1, col2 = st.columns([1.5, 1])
 
 with col1:
-    st.header("1. Input Data")
+    st.header("About the Aircraft")
+    st.write("""
+    The **Citabria Aurora 7ECA** is a two-seat, fixed-gear utility aircraft designed for flight training, 
+    touring, and light aerobatics. Known for its rugged steel-tube fuselage and wooden-spar wings, 
+    the Citabria is a favorite among tailwheel pilots.
     
-    # Unit Toggle
-    weight_unit = st.radio("Weight Input Unit", ["Pounds (lbs)", "Kilograms (kg)"], horizontal=True)
-    w_conv = KG_TO_LBS if weight_unit == "Kilograms (kg)" else 1.0
-    w_label = "kg" if weight_unit == "Kilograms (kg)" else "lbs"
-
-    # Weight Inputs
-    bew = st.number_input(f"Basic Empty Weight ({w_label})", value=BEW_DEFAULT/w_conv) * w_conv
-    pilot = st.number_input(f"Front Seat Occupant ({w_label})", value=170.0/w_conv) * w_conv
-    rear = st.number_input(f"Rear Seat Occupant ({w_label})", value=0.0) * w_conv
-    bags = st.number_input(f"Baggage/Cargo ({w_label})", value=0.0, help="Manufacturer standard limit is 100 lbs") * w_conv
+    Because the 7ECA is often used for training and aerobatics, maintaining a precise 
+    **Weight and Balance** is critical for both control authority and structural integrity.
+    """)
     
-    st.divider()
-    
-    # Fuel Inputs
-    fuel_unit = st.radio("Fuel Input Unit", ["Gallons", "Pounds (lbs)"], horizontal=True)
-    if fuel_unit == "Gallons":
-        fuel_qty = st.number_input("Fuel Quantity (Gallons)", value=20.0, max_value=36.0)
-        fuel_lbs = fuel_qty * FUEL_DENSITY
-    else:
-        fuel_lbs = st.number_input("Fuel Weight (lbs)", value=120.0, max_value=216.0)
+    st.info("💡 **Ready to calculate?** Select 'Calculator' from the sidebar menu to begin your manifest.")
 
 with col2:
-    st.header("2. Safety Status")
-    
-    # Math Engine
-    data = [
-        {"Station": "Basic Empty Weight", "Weight": bew, "Arm": BEW_ARM},
-        {"Station": "Front Seat", "Weight": pilot, "Arm": 16.0},
-        {"Station": "Rear Seat", "Weight": rear, "Arm": 47.0},
-        {"Station": "Baggage", "Weight": bags, "Arm": 72.0},
-        {"Station": "Fuel", "Weight": fuel_lbs, "Arm": 24.0},
-    ]
-    df = pd.DataFrame(data)
-    df['Moment'] = df['Weight'] * df['Arm']
-    
-    total_weight = df['Weight'].sum()
-    total_moment = df['Moment'].sum()
-    cg = total_moment / total_weight if total_weight > 0 else 0
+    st.markdown('<div class="spec-card">', unsafe_allow_html=True)
+    st.subheader("🛠️ Design Specs")
+    st.write("**Engine:** Lycoming O-235 (115 HP)")
+    st.write("**Max Gross Weight:** 1,650 lbs")
+    st.write("**Fuel Capacity:** 36 Gallons (Standard)")
+    st.write("**Vso (Stall):** 51 MPH")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # Safety Logic
-    is_weight_safe = total_weight <= MTOW
-    is_cg_safe = CG_FWD <= cg <= CG_AFT
-    is_bag_safe = bags <= 100.0
-    
-    if is_weight_safe and is_cg_safe and is_bag_safe:
-        st.success("✅ SAFE FOR FLIGHT")
-    elif is_weight_safe and is_cg_safe and not is_bag_safe:
-        st.warning("⚠️ WITHIN ENVELOPE - BAGGAGE STRUCTURAL LIMIT EXCEEDED")
-    else:
-        st.error("❌ NOT SAFE FOR FLIGHT")
+st.divider()
 
-    # Metrics
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Total Weight", f"{total_weight:.1f} lbs", f"{MTOW - total_weight:.1f} lbs rem", delta_color="normal")
-    m2.metric("C.G. Location", f"{cg:.2f} in")
-    m3.metric("Max Gross", f"{MTOW} lbs")
+# Instructional Section
+st.subheader("How to Use This Tool")
+c1, c2, c3 = st.columns(3)
 
-    # --- PLOT ---
-    fig, ax = plt.subplots(figsize=(6, 4))
-    env_x = [CG_FWD, CG_FWD, CG_AFT, CG_AFT, CG_FWD]
-    env_y = [1000, MTOW, MTOW, 1000, 1000]
-    ax.plot(env_x, env_y, 'g-', label="Normal Envelope")
-    ax.scatter(cg, total_weight, color='red' if not (is_weight_safe and is_cg_safe) else 'blue', s=100)
-    ax.set_xlabel("C.G. (Inches Aft of Datum)")
-    ax.set_ylabel("Weight (lbs)")
-    ax.grid(True, alpha=0.3)
-    st.pyplot(fig)
+with c1:
+    st.markdown("### 1️⃣ Enter Weights")
+    st.write("Input the weights for the pilot, passenger, baggage, and fuel load in either Lbs or Kg.")
 
-# --- TABLE ---
-st.header("3. Loading Manifest")
+with c2:
+    st.markdown("### 2️⃣ Check the Graph")
+    st.write("The animated envelope will show you exactly where your Center of Gravity (CG) sits.")
 
-st.table(df.style.format({"Weight": "{:.2f}", "Arm": "{:.2f}", "Moment": "{:.2f}"}))
+with c3:
+    st.markdown("### 3️⃣ Follow Advice")
+    st.write("If you are out of balance, the app will suggest how to fix your load before takeoff.")
+
+st.warning("⚠️ **Disclaimer:** This tool is for educational purposes. Always verify calculations using the official POH for your specific tail number.")
