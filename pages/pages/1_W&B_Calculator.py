@@ -24,35 +24,38 @@ st.markdown("""
     
     .stApp { background-color: #0d1117; }
 
-    /* --- SIDEBAR IMPROVEMENTS --- */
-    [data-testid="stSidebarNav"] ul li:nth-child(1) span {
-        visibility: hidden;
+    /* --- ROBUST SIDEBAR NAVIGATION FIX --- */
+    /* Target first link (Home) */
+    [data-testid="stSidebarNavItems"] li:nth-child(1) span {
+        font-size: 0 !important; 
     }
-    [data-testid="stSidebarNav"] ul li:nth-child(1) span::after {
+    [data-testid="stSidebarNavItems"] li:nth-child(1) span::before {
         content: "🏠 Home";
+        font-size: 16px !important;
         visibility: visible;
         color: #00d4ff;
         text-shadow: 0 0 10px #00d4ff;
         font-family: 'Orbitron', sans-serif;
-        font-size: 16px;
     }
 
-    [data-testid="stSidebarNav"] ul li:nth-child(2) span {
-        visibility: hidden;
+    /* Target second link (W&B Calculator) */
+    [data-testid="stSidebarNavItems"] li:nth-child(2) span {
+        font-size: 0 !important;
     }
-    [data-testid="stSidebarNav"] ul li:nth-child(2) span::after {
+    [data-testid="stSidebarNavItems"] li:nth-child(2) span::before {
         content: "⚖️ W&B Calculator";
+        font-size: 16px !important;
         visibility: visible;
         color: #00d4ff;
         text-shadow: 0 0 10px #00d4ff;
         font-family: 'Orbitron', sans-serif;
-        font-size: 16px;
     }
 
-    [data-testid="stSidebarNav"] ul li:hover {
-        background-color: rgba(0, 212, 255, 0.1);
-        border-radius: 10px;
-        transition: 0.3s;
+    /* Hover Glow Effect */
+    [data-testid="stSidebarNavItems"] li:hover {
+        background-color: rgba(0, 212, 255, 0.15);
+        border-radius: 8px;
+        transition: 0.3s ease;
     }
     /* --- END SIDEBAR IMPROVEMENTS --- */
 
@@ -172,6 +175,11 @@ with st.sidebar:
             st.markdown(f"**{item['time']}** | {item['weight']} | {item['safe']}")
             st.caption(f"CG: {item['cg']}")
             st.divider()
+        
+        # CLEAR HISTORY BUTTON
+        if st.button("🗑️ CLEAR HISTORY"):
+            st.session_state.calc_history = []
+            st.rerun()
     else:
         st.info("No logs found. Values reset to 0 for new session.")
 

@@ -22,39 +22,39 @@ st.markdown("""
     /* Dark Theme Background */
     .stApp { background-color: #0d1117; }
 
-    /* --- SIDEBAR IMPROVEMENTS --- */
+    /* --- ROBUST SIDEBAR NAVIGATION FIX --- */
     
-    /* Target the first link (main) */
-    [data-testid="stSidebarNav"] ul li:nth-child(1) span {
-        visibility: hidden;
+    /* Target first link (Home) */
+    [data-testid="stSidebarNavItems"] li:nth-child(1) span {
+        font-size: 0 !important; 
     }
-    [data-testid="stSidebarNav"] ul li:nth-child(1) span::after {
+    [data-testid="stSidebarNavItems"] li:nth-child(1) span::before {
         content: "🏠 Home";
+        font-size: 16px !important;
         visibility: visible;
         color: #00d4ff;
         text-shadow: 0 0 10px #00d4ff;
         font-family: 'Orbitron', sans-serif;
-        font-size: 16px;
     }
 
-    /* Target the second link (calculator) */
-    [data-testid="stSidebarNav"] ul li:nth-child(2) span {
-        visibility: hidden;
+    /* Target second link (W&B Calculator) */
+    [data-testid="stSidebarNavItems"] li:nth-child(2) span {
+        font-size: 0 !important;
     }
-    [data-testid="stSidebarNav"] ul li:nth-child(2) span::after {
+    [data-testid="stSidebarNavItems"] li:nth-child(2) span::before {
         content: "⚖️ W&B Calculator";
+        font-size: 16px !important;
         visibility: visible;
         color: #00d4ff;
         text-shadow: 0 0 10px #00d4ff;
         font-family: 'Orbitron', sans-serif;
-        font-size: 16px;
     }
 
-    /* Sidebar Hover Glow */
-    [data-testid="stSidebarNav"] ul li:hover {
-        background-color: rgba(0, 212, 255, 0.1);
-        border-radius: 10px;
-        transition: 0.3s;
+    /* Hover Glow Effect */
+    [data-testid="stSidebarNavItems"] li:hover {
+        background-color: rgba(0, 212, 255, 0.15);
+        border-radius: 8px;
+        transition: 0.3s ease;
     }
 
     /* --- END SIDEBAR IMPROVEMENTS --- */
@@ -108,13 +108,14 @@ st.markdown("""
 # 4. MAIN HEADER
 st.markdown('<div class="header-pill">🚀 <span class="neon-text">CITABRIA FLIGHT INTERFACE</span></div>', unsafe_allow_html=True)
 
-# (Rest of your original code follows...)
+# 5. LOADING ANIMATIONS
 lottie_air = load_lottieurl("https://lottie.host/82542037-1601-4475-9b24-733333333333/your_json_here.json") 
 if lottie_air:
     st_lottie(lottie_air, height=200)
 
 st.divider()
 
+# 6. AIRCRAFT INFO SECTION
 col1, col2 = st.columns([1.5, 1])
 
 with col1:
@@ -137,6 +138,7 @@ with col2:
 
 st.divider()
 
+# 7. INSTRUCTIONAL SECTION
 st.markdown('<div class="section-box">🕹️ HOW TO USE THIS TOOL</div>', unsafe_allow_html=True)
 c1, c2, c3 = st.columns(3)
 
