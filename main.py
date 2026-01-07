@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_lottie import st_lottie
 import requests
 
-# 1. PAGE CONFIG (Must be the very first Streamlit command)
+# 1. PAGE CONFIG
 st.set_page_config(
     page_title="Citabria 7ECA Home",
     page_icon="✈️",
@@ -21,6 +21,43 @@ st.markdown("""
     
     /* Dark Theme Background */
     .stApp { background-color: #0d1117; }
+
+    /* --- SIDEBAR IMPROVEMENTS --- */
+    
+    /* Target the first link (main) */
+    [data-testid="stSidebarNav"] ul li:nth-child(1) span {
+        visibility: hidden;
+    }
+    [data-testid="stSidebarNav"] ul li:nth-child(1) span::after {
+        content: "🏠 Home";
+        visibility: visible;
+        color: #00d4ff;
+        text-shadow: 0 0 10px #00d4ff;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 16px;
+    }
+
+    /* Target the second link (calculator) */
+    [data-testid="stSidebarNav"] ul li:nth-child(2) span {
+        visibility: hidden;
+    }
+    [data-testid="stSidebarNav"] ul li:nth-child(2) span::after {
+        content: "⚖️ W&B Calculator";
+        visibility: visible;
+        color: #00d4ff;
+        text-shadow: 0 0 10px #00d4ff;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 16px;
+    }
+
+    /* Sidebar Hover Glow */
+    [data-testid="stSidebarNav"] ul li:hover {
+        background-color: rgba(0, 212, 255, 0.1);
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+    /* --- END SIDEBAR IMPROVEMENTS --- */
 
     /* Futuristic Pill Header */
     .header-pill {
@@ -45,7 +82,7 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Section Headers with Blue Glow */
+    /* Section Headers */
     .section-box {
         border-left: 4px solid #00d4ff;
         padding-left: 15px;
@@ -58,7 +95,6 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* Futuristic Spec Card */
     .spec-card {
         background: rgba(255, 255, 255, 0.03);
         padding: 20px;
@@ -72,14 +108,13 @@ st.markdown("""
 # 4. MAIN HEADER
 st.markdown('<div class="header-pill">🚀 <span class="neon-text">CITABRIA FLIGHT INTERFACE</span></div>', unsafe_allow_html=True)
 
-# 5. 3D ANIMATION
+# (Rest of your original code follows...)
 lottie_air = load_lottieurl("https://lottie.host/82542037-1601-4475-9b24-733333333333/your_json_here.json") 
 if lottie_air:
     st_lottie(lottie_air, height=200)
 
 st.divider()
 
-# 6. AIRCRAFT INFO SECTION
 col1, col2 = st.columns([1.5, 1])
 
 with col1:
@@ -89,7 +124,7 @@ with col1:
     touring, and light aerobatics. Known for its rugged steel-tube fuselage and wooden-spar wings, 
     the Citabria is a favorite among tailwheel pilots.
     """)
-    st.info("💡 **Ready to calculate?** Select 'Calculator' from the sidebar menu to begin your manifest.")
+    st.info("💡 **Ready to calculate?** Select 'W&B Calculator' from the sidebar menu to begin.")
 
 with col2:
     st.markdown('<div class="spec-card">', unsafe_allow_html=True)
@@ -102,7 +137,6 @@ with col2:
 
 st.divider()
 
-# 7. INSTRUCTIONAL SECTION
 st.markdown('<div class="section-box">🕹️ HOW TO USE THIS TOOL</div>', unsafe_allow_html=True)
 c1, c2, c3 = st.columns(3)
 

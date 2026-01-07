@@ -15,7 +15,7 @@ FUEL_DENSITY = 6.0
 
 # --- INITIALIZE HISTORY IN SESSION STATE ---
 if 'calc_history' not in st.session_state:
-    st.session_state.calc_history = [] # This stores data for the current session only
+    st.session_state.calc_history = [] 
 
 # --- UNIFIED FUTURISTIC STYLING ---
 st.markdown("""
@@ -23,6 +23,38 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
     
     .stApp { background-color: #0d1117; }
+
+    /* --- SIDEBAR IMPROVEMENTS --- */
+    [data-testid="stSidebarNav"] ul li:nth-child(1) span {
+        visibility: hidden;
+    }
+    [data-testid="stSidebarNav"] ul li:nth-child(1) span::after {
+        content: "🏠 Home";
+        visibility: visible;
+        color: #00d4ff;
+        text-shadow: 0 0 10px #00d4ff;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 16px;
+    }
+
+    [data-testid="stSidebarNav"] ul li:nth-child(2) span {
+        visibility: hidden;
+    }
+    [data-testid="stSidebarNav"] ul li:nth-child(2) span::after {
+        content: "⚖️ W&B Calculator";
+        visibility: visible;
+        color: #00d4ff;
+        text-shadow: 0 0 10px #00d4ff;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 16px;
+    }
+
+    [data-testid="stSidebarNav"] ul li:hover {
+        background-color: rgba(0, 212, 255, 0.1);
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+    /* --- END SIDEBAR IMPROVEMENTS --- */
 
     .header-pill {
         display: flex;
