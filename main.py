@@ -1,99 +1,99 @@
 import streamlit as st
-import streamlit as st
 from streamlit_lottie import st_lottie
 import requests
 
-# Function to load 3D animations
-def load_lottieurl(url):
-    r = requests.get(url)
-    return r.json() if r.status_code == 200 else None
-
-# Futuristic Header Code
-st.markdown("""
-<style>
-    .futuristic-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 1px solid rgba(0, 212, 255, 0.3);
-        padding: 25px;
-        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    .neon-text {
-        color: #00d4ff;
-        text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff;
-        font-size: 35px;
-        font-weight: bold;
-        letter-spacing: 2px;
-    }
-</style>
-<div class="futuristic-card">
-    <div class="neon-text">🚀 CITABRIA FLIGHT INTERFACE</div>
-</div>
-""", unsafe_allow_html=True)
-
-# Add a 3D animated airplane icon
-lottie_air = load_lottieurl("https://lottie.host/82542037-1601-4475-9b24-733333333333/your_json_here.json") # Example URL
-if lottie_air:
-    st_lottie(lottie_air, height=200)
-# Page Configuration
+# 1. PAGE CONFIG (Must be the very first Streamlit command)
 st.set_page_config(
     page_title="Citabria 7ECA Home",
     page_icon="✈️",
     layout="wide"
 )
 
-# Custom Styling for the Home Page
+# 2. LOAD ANIMATIONS
+def load_lottieurl(url):
+    r = requests.get(url)
+    return r.json() if r.status_code == 200 else None
+
+# 3. MASTER FUTURISTIC STYLING
 st.markdown("""
 <style>
-    .main-title {
-        font-size: 42px;
-        font-weight: bold;
-        color: #0E1117;
-        text-align: center;
-        margin-bottom: 0px;
-    }
-    .subtitle {
-        font-size: 20px;
-        color: #555;
-        text-align: center;
-        margin-top: 0px;
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    
+    /* Dark Theme Background */
+    .stApp { background-color: #0d1117; }
+
+    /* Futuristic Pill Header */
+    .header-pill {
+        display: flex;
+        align-items: center;
+        background: rgba(22, 27, 34, 0.6);
+        border: 1px solid #00d4ff;
+        border-radius: 50px;
+        padding: 10px 25px;
+        width: fit-content;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
         margin-bottom: 30px;
     }
+
+    .neon-text {
+        color: #00d4ff;
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 10px #00d4ff;
+        font-size: 22px;
+        font-weight: bold;
+        margin-left: 15px;
+        letter-spacing: 1px;
+    }
+
+    /* Section Headers with Blue Glow */
+    .section-box {
+        border-left: 4px solid #00d4ff;
+        padding-left: 15px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-family: 'Orbitron', sans-serif;
+        color: #ffffff;
+        font-size: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Futuristic Spec Card */
     .spec-card {
-        background-color: #f0f2f6;
+        background: rgba(255, 255, 255, 0.03);
         padding: 20px;
         border-radius: 15px;
-        border-left: 5px solid #ff4b4b;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.1);
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-title">✈️ Citabria Aurora 7ECA Flight Suite</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Official Pre-Flight Weight & Balance Planning Tool</div>', unsafe_allow_html=True)
+# 4. MAIN HEADER
+st.markdown('<div class="header-pill">🚀 <span class="neon-text">CITABRIA FLIGHT INTERFACE</span></div>', unsafe_allow_html=True)
+
+# 5. 3D ANIMATION
+lottie_air = load_lottieurl("https://lottie.host/82542037-1601-4475-9b24-733333333333/your_json_here.json") 
+if lottie_air:
+    st_lottie(lottie_air, height=200)
 
 st.divider()
 
+# 6. AIRCRAFT INFO SECTION
 col1, col2 = st.columns([1.5, 1])
 
 with col1:
-    st.header("About the Aircraft")
+    st.markdown('<div class="section-box">ℹ️ ABOUT THE AIRCRAFT</div>', unsafe_allow_html=True)
     st.write("""
     The **Citabria Aurora 7ECA** is a two-seat, fixed-gear utility aircraft designed for flight training, 
     touring, and light aerobatics. Known for its rugged steel-tube fuselage and wooden-spar wings, 
     the Citabria is a favorite among tailwheel pilots.
-    
-    Because the 7ECA is often used for training and aerobatics, maintaining a precise 
-    **Weight and Balance** is critical for both control authority and structural integrity.
     """)
-    
     st.info("💡 **Ready to calculate?** Select 'Calculator' from the sidebar menu to begin your manifest.")
 
 with col2:
     st.markdown('<div class="spec-card">', unsafe_allow_html=True)
-    st.subheader("🛠️ Design Specs")
+    st.markdown('<div style="font-family: Orbitron; color: #00d4ff; margin-bottom:10px;">🛠️ DESIGN SPECS</div>', unsafe_allow_html=True)
     st.write("**Engine:** Lycoming O-235 (115 HP)")
     st.write("**Max Gross Weight:** 1,650 lbs")
     st.write("**Fuel Capacity:** 36 Gallons (Standard)")
@@ -102,8 +102,8 @@ with col2:
 
 st.divider()
 
-# Instructional Section
-st.subheader("How to Use This Tool")
+# 7. INSTRUCTIONAL SECTION
+st.markdown('<div class="section-box">🕹️ HOW TO USE THIS TOOL</div>', unsafe_allow_html=True)
 c1, c2, c3 = st.columns(3)
 
 with c1:
