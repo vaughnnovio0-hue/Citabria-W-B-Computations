@@ -14,6 +14,7 @@ CG_LIMIT_AFT = 19.2
 FUEL_DENSITY = 6.0  
 
 # --- STYLING & ANIMATIONS ---
+# FIXED: changed unsafe_content_type to unsafe_allow_html
 st.markdown("""
 <style>
     @keyframes pulse {
@@ -71,9 +72,9 @@ with col2:
     else:
         st.markdown('<div class="danger-banner">❌ NOT SAFE FOR FLIGHT</div>', unsafe_allow_html=True)
 
-    # Specific Verdict Sentence
-    verdict_text = "safe" if is_safe else "NOT safe"
-    st.info(f"The CG is **{cg:.2f} in.** aft of datum line at **{total_weight:.1f} lbs**, therefore the aircraft is **{verdict_text}** for flight.")
+    # Verdict Statement
+    status = "safe" if is_safe else "NOT safe"
+    st.info(f"The CG is **{cg:.2f} in.** aft of datum line at **{total_weight:.1f} lbs**, therefore the aircraft is **{status}** for flight.")
 
     # Smart Recommendations
     if not is_safe:
@@ -81,15 +82,14 @@ with col2:
         if not is_w_safe:
             st.warning(f"👉 **Overweight:** Remove {total_weight - MTOW:.1f} lbs of baggage or fuel.")
         if cg > CG_LIMIT_AFT:
-            st.warning("👉 **Too Far Aft:** Move weight forward (e.g., move items from baggage to the front seat).")
+            st.warning("👉 **Too Far Aft:** Move weight forward (move items from baggage to front seat).")
         if cg < CG_LIMIT_FWD:
-            st.warning("👉 **Too Far Forward:** Move weight aft (e.g., add ballast to the baggage compartment).")
+            st.warning("👉 **Too Far Forward:** Move weight aft (add baggage or ballast).")
 
-    # The Envelope Graph
+    # Graph
     fig, ax = plt.subplots()
-    ax.plot([CG_LIMIT_FWD, CG_LIMIT_FWD, CG_LIMIT_AFT, CG_LIMIT_AFT, CG_LIMIT_FWD], [1000, MTOW, MTOW, 1000, 1000], 'g-', label="Envelope")
+    ax.plot([CG_LIMIT_FWD, CG_LIMIT_FWD, CG_LIMIT_AFT, CG_LIMIT_AFT, CG_LIMIT_FWD], [1000, MTOW, MTOW, 1000, 1000], 'g-')
     ax.scatter(cg, total_weight, color='blue' if is_safe else 'red', s=250, edgecolors='white', zorder=5)
     ax.set_xlabel("CG (Inches aft of Datum)")
     ax.set_ylabel("Weight (lbs)")
-    ax.grid(True, alpha=0.3)
     st.pyplot(fig)
